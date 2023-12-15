@@ -126,9 +126,10 @@ for node in nt.nodes:
 with tab3:
     nt.save_graph(f'elidek_graph.html')
     HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
-
+    
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
+    nt.show_buttons(filter_=["physics"])
     components.html(HtmlFile.read(), height=800, width=800)
 
     with open("elidek_graph.html", "rb") as file:
