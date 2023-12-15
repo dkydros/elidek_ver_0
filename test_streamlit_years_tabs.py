@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import openpyxl
 import networkx as nx
@@ -122,8 +123,22 @@ neighbor_map = nt.get_adj_list()
 # add neighbor data to node hover data
 for node in nt.nodes:
     node["value"] = len(neighbor_map[node["id"]])
+with tab3:
+    nt.save_graph(f'elidek_graph.html')
+    HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
 
-nt.show_buttons(filter_=["physics"])
-nt.show('g.html', notebook = False)
+# Load HTML into HTML component for display on Streamlit
+    st.header('Δίκτυο Μελών ΔΕΠ')
+    components.html(HtmlFile.read(), height=800, width=800)
+
+    with open("elidek_graph.html", "rb") as file:
+        btn = st.download_button(
+            label="Download Δίκτυο Μελών ΔΕΠ",
+            data=file,
+            file_name="elidek_graph.html",
+            mime="file/html"
+           )
+#nt.show_buttons(filter_=["physics"])
+#nt.show('g.html', notebook = False)
 
 
