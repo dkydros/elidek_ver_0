@@ -114,7 +114,7 @@ for n in G.edges(data=True):
     n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
 
 
-nt = Network('500px', '500px', directed = True, select_menu = True, filter_menu = True, bgcolor='#31333f', font_color='white')
+nt = Network('500px', '500px', directed = True, select_menu = True, filter_menu = True)
 # populates the nodes and edges data structures
 nt.from_nx(G)
 
