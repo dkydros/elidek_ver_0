@@ -105,7 +105,7 @@ with tab3:
         n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
     
     #here create pyvis net
-    nt = Network(height='500px', width='500px', directed = True, select_menu=True, filter_menu = True, bgcolor='white', font_color='black', cdn_resources='remote')
+    nt = Network(height='800px', width='800px', directed = True, select_menu=True, filter_menu = True, bgcolor='white', font_color='black', cdn_resources='remote')
     # populates the nodes and edges data structures
     nt.from_nx(G)
 
@@ -148,7 +148,7 @@ with tab3:
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
     
-    components.html(HtmlFile.read(), height=800, width=800)
+    components.html(HtmlFile.read(), height=1200, width=800)
     
     
     with open("elidek_graph.html", "rb") as file:
