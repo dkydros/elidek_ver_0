@@ -43,7 +43,7 @@ res_n = nodes_df
 res_e = edges_df
 
 #name_query = st.text_input("String match for Name")
-tab1, tab2, tab3 = st.tabs(["Μέλη ΔΕΠ", "Εργασίες", "Other stats.."])
+tab1, tab2, tab3, tab4 = st.tabs(["Μέλη ΔΕΠ", "Εργασίες", "Δίκτυα", "Στατιστικά"])
 with tab1:
     cols = st.columns(4)
     university = cols[0].multiselect("Πανεπιστήμιο", univ_options)
@@ -78,9 +78,10 @@ if inkeywords:
     res_e = res_e.loc[res_e["Keywords"].str.contains(inkeywords)]   
 
 
-
-st.write(res_n)
-st.write(res_e)
+with tab1:
+    st.write(res_n)
+with tab2
+    st.write(res_e)
 
 
 #now draw
@@ -98,13 +99,6 @@ G = nx.from_pandas_edgelist(edges_df, source = 'source', target = 'dest',
 
 #here add node attibutes
 nx.set_node_attributes(G, nodes_df.set_index('name').to_dict('index'))
-
-
-#print(G.edges(data = True))
-#print(G.nodes(data = True))
-
-#nx.draw(G, with_labels = True)
-#plt.show()
 
 #here create node titles
 for n in G.nodes(data=True):
