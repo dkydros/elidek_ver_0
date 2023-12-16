@@ -80,7 +80,7 @@ if inkeywords:
 
 with tab1:
     st.write(res_n)
-with tab2
+with tab2:
     st.write(res_e)
 
 
