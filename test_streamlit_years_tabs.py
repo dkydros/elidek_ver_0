@@ -141,23 +141,24 @@ with tab3:
             node["color"] = colors[int(x.index(node["university"]))]
         nt.show_buttons(filter_=["physics"])
         nt.show('g.html', notebook = False)
-#    nt.save_graph(f'elidek_graph.html')
-#    HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
+    
+    nt.save_graph(f'elidek_graph.html')
+    HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
     
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
     
-#    components.html(HtmlFile.read(), height=800, width=800)
+    components.html(HtmlFile.read(), height=500, width=500)
     
     
-#    with open("elidek_graph.html", "rb") as file:
-#        btn = st.download_button(
- #           label="Download Δίκτυο Μελών ΔΕΠ",
-#            data=file,
-#            file_name="elidek_graph.html",
- #           mime="file/html"
- #          )
-#
+    with open("elidek_graph.html", "rb") as file:
+        btn = st.download_button(
+            label="Download Δίκτυο Μελών ΔΕΠ",
+            data=file,
+            file_name="elidek_graph.html",
+            mime="file/html"
+        )
+
 #nt.show('g.html', notebook = False)
 
 
