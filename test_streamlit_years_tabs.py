@@ -88,8 +88,8 @@ nodes_df = res_n
 nodes_df.reset_index(inplace = True, drop = True)
 edges_df = res_e
 edges_df.reset_index(inplace = True, drop = True)
-print(nodes_df)
-print(edges_df)
+#print(nodes_df)
+#print(edges_df)
 
 G = nx.from_pandas_edgelist(edges_df, source = 'source', target = 'dest',
                             create_using=nx.MultiDiGraph(),
@@ -114,7 +114,7 @@ for n in G.edges(data=True):
     n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
 
 
-nt = Network('800px', '800px', directed = True, bgcolor='#FFC0CB', font_color='black')
+nt = Network(height='800px', width='100%', directed = True, bgcolor='#FFC0CB', font_color='black', select_menu=True, filter_menu= True)
 # populates the nodes and edges data structures
 nt.from_nx(G)
 
@@ -129,9 +129,10 @@ with tab3:
     
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
-    nt.show_buttons(filter_=["physics"])
+    
     components.html(HtmlFile.read(), height=800, width=800)
-
+    nt.show_buttons(filter_=["physics"])
+    
     with open("elidek_graph.html", "rb") as file:
         btn = st.download_button(
             label="Download Δίκτυο Μελών ΔΕΠ",
@@ -139,7 +140,7 @@ with tab3:
             file_name="elidek_graph.html",
             mime="file/html"
            )
-#nt.show_buttons(filter_=["physics"])
+#
 #nt.show('g.html', notebook = False)
 
 
