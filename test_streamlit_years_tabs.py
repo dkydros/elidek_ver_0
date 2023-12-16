@@ -5,6 +5,7 @@ import openpyxl
 import networkx as nx
 import matplotlib.pyplot as plt
 from pyvis.network import Network
+from networkx.algorithms import community
 
 # Cache our data
 @st.cache_data()
@@ -55,8 +56,7 @@ with tab2:
     years = cols[0].multiselect("Έτη", year_options)
     intitle = st.text_input("Δώσε λέξεις για αναζήτηση στον τίτλο")
     inkeywords = st.text_input("Δώσε λέξεις για αναζήτηση στα keywords")
-#if name_query != "":
-#   res = res.loc[res.Name.str.contains(name_query)]
+
 
 if university:
     res_n = check_rows("university", university)
@@ -85,55 +85,78 @@ with tab2
 
 
 #now draw
-nodes_df = res_n
-nodes_df.reset_index(inplace = True, drop = True)
-edges_df = res_e
-edges_df.reset_index(inplace = True, drop = True)
-#print(nodes_df)
-#print(edges_df)
+with tab3:
+    nodes_df = res_n
+    nodes_df.reset_index(inplace = True, drop = True)
+    edges_df = res_e
+    edges_df.reset_index(inplace = True, drop = True)
 
-G = nx.from_pandas_edgelist(edges_df, source = 'source', target = 'dest',
+    G = nx.from_pandas_edgelist(edges_df, source = 'source', target = 'dest',
                             create_using=nx.MultiDiGraph(),
                             edge_attr = True)
+    #here add node attibutes
+    nx.set_node_attributes(G, nodes_df.set_index('name').to_dict('index'))
 
+    #here create node titles
+    for n in G.nodes(data=True):
+        n[1]['title']=n[1]['university']+'\n'+n[1]['school']+'\n'+n[1]['department']+'\n'+n[1]['ranking'] #add hoovering to graph
+    #here create edge titles
+    for n in G.edges(data=True):
+        n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
+    
+    #here create pyvis net
+    nt = Network(height='500px', width='500px', directed = True, select_menu=True, filter_menu = True, bgcolor='#FFC0CB', font_color='black')
+    # populates the nodes and edges data structures
+    nt.from_nx(G)
 
-#here add node attibutes
-nx.set_node_attributes(G, nodes_df.set_index('name').to_dict('index'))
-
-#here create node titles
-for n in G.nodes(data=True):
-    n[1]['title']=n[1]['university']+'\n'+n[1]['school']+'\n'+n[1]['department']+'\n'+n[1]['ranking'] #add hoovering to graph
-#here create edge titles
-for n in G.edges(data=True):
-    n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
-
-
-nt = Network(height='800px', width='100%', directed = True, bgcolor='#FFC0CB', font_color='black')
-# populates the nodes and edges data structures
-nt.from_nx(G)
-
-neighbor_map = nt.get_adj_list()
-
-# add neighbor data to node hover data
-for node in nt.nodes:
-    node["value"] = len(neighbor_map[node["id"]])
-with tab3:
-    nt.save_graph(f'elidek_graph.html')
-    HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
+    neighbor_map = nt.get_adj_list()
+    for node in nt.nodes:
+        node["value"] = len(neighbor_map[node["id"]]) #size by degree centrality
+    
+    colors=['bisque', 'darkorange', 'forestgreen','gold', 'purple', 'olive',
+         'limegreen', 'comfortblue', 'lightcoral', 'maroon', 'silver',
+         'salmon', 'bisque', 'khaki', 'lime', 'azure', 'violet', 'green', 'black',
+         'tomato', 'yellow', 'cyan', 'magenta', 'peru', 'pink', 'turquise']
+    color_options = ['community', 'university']
+    color_mode_selected = st.selectbox('Επιλέξτε τρόπο χρωματισμού κόμβων',
+                                  ('Community', 'university'))
+    
+    if color_mode_selected =='Community':
+        coms = community.greedy_modularity_communities(G)
+        if len(coms)>len(colors):
+            colors = colors*(len(coms)%len(colors)+1)
+    # add neighbor data to node hover data
+        for node in nt.nodes:
+            for com in coms:
+                if node["id"] in com:
+                    node["color"] = colors[int(coms.index(com))]
+                    break
+        nt.show_buttons(filter_=["physics"])
+        nt.show('g.html', notebook = False)
+    else:
+        x = list(univ_options)
+        if len(x)>len(colors):
+            colors = colors*(len(x)%len(colors)+1)
+        for node in nt.nodes:
+            node["color"] = colors[int(x.index(node["university"]))]
+        nt.show_buttons(filter_=["physics"])
+        nt.show('g.html', notebook = False)
+#    nt.save_graph(f'elidek_graph.html')
+#    HtmlFile = open(f'elidek_graph.html','r',encoding='utf-8')
     
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
     
-    components.html(HtmlFile.read(), height=800, width=800)
-    #nt.show_buttons(filter_=["physics"])
+#    components.html(HtmlFile.read(), height=800, width=800)
     
-    with open("elidek_graph.html", "rb") as file:
-        btn = st.download_button(
-            label="Download Δίκτυο Μελών ΔΕΠ",
-            data=file,
-            file_name="elidek_graph.html",
-            mime="file/html"
-           )
+    
+#    with open("elidek_graph.html", "rb") as file:
+#        btn = st.download_button(
+ #           label="Download Δίκτυο Μελών ΔΕΠ",
+#            data=file,
+#            file_name="elidek_graph.html",
+ #           mime="file/html"
+ #          )
 #
 #nt.show('g.html', notebook = False)
 
