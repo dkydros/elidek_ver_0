@@ -148,7 +148,7 @@ with tab3:
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
     
-    components.html(HtmlFile.read(), height=500, width=500)
+    components.html(HtmlFile.read(), height=800, width=800)
     
     
     with open("elidek_graph.html", "rb") as file:
