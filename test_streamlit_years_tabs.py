@@ -114,7 +114,7 @@ for n in G.edges(data=True):
     n[2]['title']=n[2]['title']+'\n'+str(n[2]['DOI'])+'\n'+str(n[2]['Year'])+'\n'+n[2]['Keywords'] #add hoovering to graph
 
 
-nt = Network(height='800px', width='100%', directed = True, bgcolor='#FFC0CB', font_color='black', select_menu=True, filter_menu= True)
+nt = Network(height='500px', width='100%', directed = True, bgcolor='#FFC0CB', font_color='black', filter_menu= True)
 # populates the nodes and edges data structures
 nt.from_nx(G)
 
@@ -130,7 +130,7 @@ with tab3:
 # Load HTML into HTML component for display on Streamlit
     st.header('Δίκτυο Μελών ΔΕΠ')
     
-    components.html(HtmlFile.read(), height=800, width=800)
+    components.html(HtmlFile.read(), height=500, width=500)
     nt.show_buttons(filter_=["physics"])
     
     with open("elidek_graph.html", "rb") as file:
